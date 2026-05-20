@@ -7,6 +7,7 @@ import importlib
 import pytest
 
 import tradingagents.default_config as default_config_module
+from tradingagents.llm_clients.validators import validate_model
 
 
 def _reload_with_env(monkeypatch, **overrides):
@@ -20,9 +21,11 @@ def _reload_with_env(monkeypatch, **overrides):
 
 def test_no_env_uses_built_in_defaults(monkeypatch):
     dc = _reload_with_env(monkeypatch)
-    assert dc.DEFAULT_CONFIG["llm_provider"] == "openai"
-    assert dc.DEFAULT_CONFIG["deep_think_llm"] == "gpt-5.4"
-    assert dc.DEFAULT_CONFIG["quick_think_llm"] == "gpt-5.4-mini"
+    assert dc.DEFAULT_CONFIG["llm_provider"] == "google"
+    assert dc.DEFAULT_CONFIG["deep_think_llm"] == "gemini-flash-latest"
+    assert dc.DEFAULT_CONFIG["quick_think_llm"] == "gemini-flash-latest"
+    assert validate_model(dc.DEFAULT_CONFIG["llm_provider"], dc.DEFAULT_CONFIG["deep_think_llm"])
+    assert validate_model(dc.DEFAULT_CONFIG["llm_provider"], dc.DEFAULT_CONFIG["quick_think_llm"])
     assert dc.DEFAULT_CONFIG["backend_url"] is None
     assert dc.DEFAULT_CONFIG["max_debate_rounds"] == 1
     assert dc.DEFAULT_CONFIG["checkpoint_enabled"] is False
@@ -75,7 +78,7 @@ def test_empty_env_value_is_passthrough(monkeypatch):
         TRADINGAGENTS_LLM_PROVIDER="",
         TRADINGAGENTS_MAX_DEBATE_ROUNDS="",
     )
-    assert dc.DEFAULT_CONFIG["llm_provider"] == "openai"
+    assert dc.DEFAULT_CONFIG["llm_provider"] == "google"
     assert dc.DEFAULT_CONFIG["max_debate_rounds"] == 1
 
 

@@ -1,0 +1,7 @@
+# Edit these options, then run:
+# uv run python scripts/discover_leads.py
+
+themes=ai infrastructure, robotics automation, space tech
+investor_profile=individual investor looking for public companies with long-term growth exposure to AI, robotics, and space
+limit=25
+output=investment_ideas.csv

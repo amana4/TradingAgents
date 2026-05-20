@@ -185,6 +185,17 @@ An interface will appear showing results as they load, letting you track the age
   <img src="assets/cli/cli_transaction.png" width="100%" style="display: inline-block; margin: 0 2%;">
 </p>
 
+### Investment Lead Discovery
+
+TradingAgents also includes a separate investment lead-discovery workflow that
+keeps the existing ticker-analysis flow unchanged. Put broad themes and your
+investor profile in `investment_options.txt`; the workflow discovers candidate
+companies, scores them with the configured LLMs, and writes ranked ideas to CSV.
+
+```bash
+uv run python scripts/discover_leads.py
+```
+
 ## TradingAgents Package
 
 ### Implementation Details
@@ -213,9 +224,9 @@ from tradingagents.graph.trading_graph import TradingAgentsGraph
 from tradingagents.default_config import DEFAULT_CONFIG
 
 config = DEFAULT_CONFIG.copy()
-config["llm_provider"] = "openai"        # openai, google, anthropic, xai, deepseek, qwen, qwen-cn, glm, glm-cn, minimax, minimax-cn, openrouter, ollama, azure
-config["deep_think_llm"] = "gpt-5.4"     # Model for complex reasoning
-config["quick_think_llm"] = "gpt-5.4-mini" # Model for quick tasks
+config["llm_provider"] = "google"        # openai, google, anthropic, xai, deepseek, qwen, qwen-cn, glm, glm-cn, minimax, minimax-cn, openrouter, ollama, azure
+config["deep_think_llm"] = "gemini-flash-latest"     # Model for complex reasoning
+config["quick_think_llm"] = "gemini-flash-latest" # Model for quick tasks
 config["max_debate_rounds"] = 2
 
 ta = TradingAgentsGraph(debug=True, config=config)

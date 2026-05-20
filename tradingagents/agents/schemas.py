@@ -19,7 +19,7 @@ so that:
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -226,3 +226,60 @@ def render_pm_decision(decision: PortfolioDecision) -> str:
     if decision.time_horizon:
         parts.extend(["", f"**Time Horizon**: {decision.time_horizon}"])
     return "\n".join(parts)
+
+
+# ---------------------------------------------------------------------------
+# Lead Discovery
+# ---------------------------------------------------------------------------
+
+
+class LeadCandidate(BaseModel):
+    """A company-like prospect discovered from a market/domain search."""
+
+    company: str = Field(description="Company or organization name.")
+    website: Optional[str] = Field(
+        default=None,
+        description="Best-known company website or source URL.",
+    )
+    domain: str = Field(description="Seed market/domain that produced this candidate.")
+    description: str = Field(
+        default="",
+        description="Short evidence-backed description from search snippets or source data.",
+    )
+    evidence_urls: List[str] = Field(
+        default_factory=list,
+        description="Source URLs supporting this candidate.",
+    )
+
+
+class ScoredLead(BaseModel):
+    """Structured investment lead score produced by the lead discovery workflow."""
+
+    company: str = Field(description="Company or organization name.")
+    website: Optional[str] = Field(default=None, description="Company website or source URL.")
+    domain: str = Field(description="Seed market/domain that produced this lead.")
+    score: int = Field(
+        ge=0,
+        le=100,
+        description="Lead score from 0-100 based on fit, timing, and evidence quality.",
+    )
+    priority: str = Field(
+        description="One of High, Medium, or Low based on the score and evidence.",
+    )
+    why_interesting: str = Field(
+        description="Concise explanation of why this company is interesting for the investor profile.",
+    )
+    investor_signal: str = Field(
+        description="Primary evidence-backed signal that makes this company worth researching.",
+    )
+    catalysts: List[str] = Field(
+        default_factory=list,
+        description="Specific evidence-backed catalysts or watchlist signals.",
+    )
+    research_angle: str = Field(
+        description="Suggested research angle or next question for an individual investor.",
+    )
+    source_urls: List[str] = Field(
+        default_factory=list,
+        description="URLs used as evidence for this score.",
+    )
